@@ -3,7 +3,7 @@ import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 
 function AdminManager() {
   return (
-    <div className="manager-container bg-white flex flex-start w-100 h-screen  pl-20 ">
+    <div className="manager-container bg-white flex flex-start w-100 h-screen  pl-20  border-r-1">
       <div className="middle-box w-auto h-auto mt-50">
         {/* avatar and name and role */}
         <div className="admin-person mb-5 w-auto h-30 flex gap-4 items-center ">

@@ -2,10 +2,10 @@ import React from "react";
 import "boxicons";
 import logo from "../assets/logo/logo.png";
 
-function Navbar() {
+function Navbar({ setPage }) {
   return (
     <div
-      className="navbar-container bg-white flex items-center justify-between px-20 border-b-1"
+      className="navbar-container bg-white flex items-center justify-between px-20 border-b-1 "
       style={{ width: "100%" }}
     >
       {/* logo */}
@@ -20,7 +20,7 @@ function Navbar() {
       </div>
 
       <div className="right-nav flex justify-between gap-5">
-        {/* nut thong bao */}
+        {/* notification */}
         <div className="notification">
           <box-icon name="notification" type="solid"></box-icon>
         </div>

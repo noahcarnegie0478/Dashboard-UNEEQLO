@@ -8,7 +8,7 @@ function App() {
     <>
       <Router>
         <div className="">
-          <div className="container bg-slate-300 max-w-screen h-screen">
+          <div className="container max-w-screen h-screen">
             <Routes>
               <Route path="/" element={<HomePage />}></Route>
               <Route path="/login" element={<LoginPage />}></Route>
