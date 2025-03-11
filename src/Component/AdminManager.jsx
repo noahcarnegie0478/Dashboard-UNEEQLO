@@ -1,7 +1,7 @@
 import React from "react";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 
-function AdminManager() {
+function AdminManager({ setPage }) {
   return (
     <div className="manager-container bg-white flex flex-start w-100 h-screen  pl-20  border-r-1">
       <div className="middle-box w-auto h-auto mt-50">
@@ -44,7 +44,10 @@ function AdminManager() {
                 <div className="ml-10">
                   <ul>
                     <li>
-                      <p className="hover:font-bold hover:text-lg hover:text-red-500">
+                      <p
+                        className="hover:font-bold hover:text-lg hover:text-red-500"
+                        onClick={() => setPage("banner-create")}
+                      >
                         Add Banner
                       </p>
                     </li>
@@ -79,7 +82,10 @@ function AdminManager() {
                 <div className="ml-10">
                   <ul>
                     <li>
-                      <p className="hover:font-bold hover:text-lg hover:text-red-500">
+                      <p
+                        className="hover:font-bold hover:text-lg hover:text-red-500"
+                        onClick={() => setPage("category-create")}
+                      >
                         Add category
                       </p>
                     </li>
