@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <Router>
-        <div className="font-sans ">
+        <div className="">
           <div className="container bg-slate-300 max-w-screen h-screen">
             <Routes>
               <Route path="/" element={<HomePage />}></Route>

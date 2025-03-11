@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -59,4 +59,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.manager-container button {
+  background-color: white;
+  width: 100%;
+  border: none;
+  padding: 0;
+}
+
 @import "tailwindcss";
