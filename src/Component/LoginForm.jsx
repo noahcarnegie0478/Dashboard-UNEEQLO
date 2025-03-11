@@ -39,8 +39,10 @@ function LoginForm() {
     }
   };
   useEffect(() => {
-    LoginUser();
-    SetValid(false);
+    if (isValid) {
+      LoginUser();
+      SetValid(false);
+    }
   }, [isValid]);
 
   return (
