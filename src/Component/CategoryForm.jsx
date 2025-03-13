@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 function CategoryForm() {
   const [Recomendation, setRecomendation] = useState("");
-  //sau khi nhap thi nhan dau +
-  // items se duoc push vao trong list va hien xuong duoi
-
+  const [submit, setSubmit] = useState(false);
+  const [error, setError] = useState("");
+  //tag
+  const [topic, setTopic] = useState("");
+  //category_id
+  const [categoryid, setCategoryID] = useState("");
+  //image
+  const [image, setImage] = useState(null);
+  //title
+  const [title, setTitle] = useState("");
   const [tags, setTag] = useState([]);
   const pushItem = () => {
     if (Recomendation === "") {
@@ -18,6 +26,61 @@ function CategoryForm() {
   const checkandDelete = e => {
     setTag(prev => prev.filter(tag => tag !== e));
   };
+
+  const handleSubmission = async () => {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
+    formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+    const ImagePosting = await axios.post(
+      "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
+      formData
+    );
+    const ImageURL = await ImagePosting.data.url;
+
+    const response = await axios.post(
+      "http://localhost:3000/api/category/create",
+
+      {
+        category_id: categoryid,
+        tag: topic,
+        title: title,
+        image_path: ImageURL,
+        recommendations: tags,
+      }
+    );
+
+    console.log(response.data);
+  };
+
+  const PostCategory = async () => {
+    if (topic === "") {
+      setError("please fill in tag field");
+    } else if (categoryid === "") {
+      setError("please fill in category_id field");
+    } else if (image === null) {
+      setError("please upload image field");
+    } else if (title === "") {
+      setError("please fill in title field");
+    } else if (Recomendation.length <= 0) {
+      setError("Recomendation are missing");
+    } else {
+      try {
+        handleSubmission();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log(submit);
+    if (submit) {
+      PostCategory();
+    }
+    setSubmit(false);
+  }, [submit]);
 
   return (
     <div className="bannerForm w-400 h-screen flex justify-center items-center">
@@ -38,6 +101,9 @@ function CategoryForm() {
               alt="tag"
               name="tag"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => {
+                setTopic(e.target.value);
+              }}
             />
           </div>
           {/* Category_id input */}
@@ -54,6 +120,9 @@ function CategoryForm() {
               alt="categoryid"
               name="categoryid"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => {
+                setCategoryID(e.target.value);
+              }}
             />
           </div>
           {/* imge input */}
@@ -70,6 +139,9 @@ function CategoryForm() {
               alt="type"
               name="type"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => {
+                setImage(e.target.files[0]);
+              }}
             />
           </div>
           {/* title input */}
@@ -86,6 +158,9 @@ function CategoryForm() {
               alt="title"
               name="title"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => {
+                setTitle(e.target.value);
+              }}
             />
           </div>
           {/* Recomendation input */}
@@ -128,11 +203,25 @@ function CategoryForm() {
             )}
           </div>
           <div className="banner-btn col-span-2 h-10 flex justify-center mt-10">
-            <div className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300">
+            <div
+              className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300"
+              onClick={() => setSubmit(true)}
+            >
               <p>Add</p>
             </div>
           </div>
+          {error !== "" ? (
+            <div className="banner-btn col-span-2 h-10 flex justify-center mt-10">
+              <div className="submit p-2  px-20   text-red-500 font-bold hover:bg-red-300">
+                <p>{error}</p>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </form>
+
+        <button onClick={() => handleSubmission()}>Click for testing</button>
       </div>
     </div>
   );
