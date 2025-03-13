@@ -120,7 +120,10 @@ function AdminManager({ setPage }) {
                 <div className="ml-10">
                   <ul>
                     <li>
-                      <p className="hover:font-bold hover:text-lg hover:text-red-500">
+                      <p
+                        className="hover:font-bold hover:text-lg hover:text-red-500"
+                        onClick={() => setPage("item-create")}
+                      >
                         Add Item
                       </p>
                     </li>

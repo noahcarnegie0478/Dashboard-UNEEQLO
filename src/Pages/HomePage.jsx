@@ -6,10 +6,10 @@ import AdminManager from "../Component/AdminManager";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BannerForm from "../Component/BannerForm";
 import CategoryForm from "../Component/CategoryForm";
+import ItemForm from "../Component/ItemForm";
 
 function HomePage() {
   const [page, setPage] = useState("banner-create");
-  const [content, setContent] = useState(null);
 
   useEffect(() => {
     console.log(page);
@@ -18,11 +18,11 @@ function HomePage() {
   return (
     <div className="Homepage-container ">
       <Navbar />
-
       <div className="main-content flex">
         <AdminManager setPage={setPage} />
         {page === "banner-create" && <BannerForm />}
         {page === "category-create" && <CategoryForm />}
+        {page === "item-create" && <ItemForm />}
       </div>
     </div>
   );
