@@ -220,8 +220,6 @@ function CategoryForm() {
             <div></div>
           )}
         </form>
-
-        <button onClick={() => handleSubmission()}>Click for testing</button>
       </div>
     </div>
   );

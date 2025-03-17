@@ -1,20 +1,33 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function ItemForm() {
   const [sizes, setSizes] = useState([]);
+  const [category, setCategory] = useState("");
+  const [category_id, setCategoryID] = useState("");
+  const [topic, setTopic] = useState("");
   const [size, setSize] = useState("");
   const [ids, setIDs] = useState([]);
+  const [stock, setStock] = useState("");
   const [id, setid] = useState("");
+  const [title, setTitle] = useState("");
+  const [rating, setRating] = useState("");
+  const [Fabric, setFabric] = useState("");
+  const [Washing, setWashing] = useState("");
+  const [material, setMaterial] = useState("");
+  const [itemId, setItemID] = useState("");
   const [featureImage, setFeatureImage] = useState(null);
   const [featureDescription, setFeatureDescription] = useState("");
   const [features, setFeatures] = useState([]);
   const [colors, setColors] = useState([]);
   const [colorName, setClname] = useState("");
   const [code, setClcode] = useState("");
-  const [colorImg, setClimg] = useState(null);
+  const [colorImg, setClimg] = useState("");
   const [ItemImage, setItemimg] = useState(null);
   const [Image, setImage] = useState(null);
   const [Images, setImages] = useState([]);
+  const [error, setError] = useState("");
+  const [ImageLinks, setURL] = useState([]);
   const pushSize = () => {
     if (size === "") {
       console.log("ignore");
@@ -43,6 +56,63 @@ function ItemForm() {
     }
   };
 
+  const PostItem = async () => {
+    if (itemId === "") {
+      setError("please fill in Id field");
+    } else if (category === "") {
+      setError("please fill in category type field");
+    } else if (category_id === "") {
+      setError("please fill in category_id field");
+    } else if (topic === "") {
+      setError("please fill in topic field");
+    } else if (title === "") {
+      setError("please fill in title field");
+    } else if (size === "") {
+      setError("please fill in size field");
+    } else if (sizes.length === 0) {
+      setError("please press + to add sizes");
+    } else if (stock === "") {
+      setError("please fill in stock field");
+    } else if (colorName === "") {
+      setError("please fill in color name field");
+    } else if (code === "") {
+      setError("please fill in code field");
+    } else if (colorImg === null) {
+      setError("please upload image for color");
+    } else if (ItemImage === null) {
+      setError("please upload the Item image for color");
+    } else if (colors.length === 0) {
+      setError("please press + to add color");
+    } else if (Image === null) {
+      setError("please upload images of item");
+    } else if (Images.length === 0) {
+      setError("please press + to add image");
+    } else if (material === "") {
+      setError("please pick a material");
+    } else if (featureDescription === "") {
+      setError("please fill in feature description field");
+    } else if (featureImage === null) {
+      setError("please upload Feature Image");
+    } else if (features.length === 0) {
+      setError("please press + to add feature");
+    } else if (rating === "") {
+      setError("please fill in rating field");
+    } else if (Fabric === "") {
+      setError("please fill in Fabric Detail field");
+    } else if (Washing === "") {
+      setError("please fill in washing Instruction field");
+    } else if (id === "") {
+      setError("please add product_id");
+    } else if (ids.length === 0) {
+      setError("please press + to add product_id");
+    } else {
+      try {
+        handleSubmission();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   const findColor = e => {
     const duplicateObject = colors.filter(
       color =>
@@ -51,8 +121,62 @@ function ItemForm() {
         color.colorImg === e ||
         color.ItemImage === e
     );
-    console.log(duplicateObject);
+
     return duplicateObject[0];
+  };
+  const postColorImage = async () => {
+    const formData = new FormData();
+    formData.append("file", ItemImage);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
+    formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+    const ImagePosting = await axios.post(
+      "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
+      formData
+    );
+    const result = ImagePosting.data.url;
+
+    if (result !== "") {
+      setColors(prev => [
+        ...prev,
+        {
+          colorName: colorName,
+          code: code,
+          colorImg: colorImg,
+          ItemImage: result,
+        },
+      ]);
+    }
+
+    console.log("colors: ", colors);
+  };
+  const postFeatureImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", featureImage);
+      formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
+      formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+      const ImagePosting = await axios.post(
+        "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
+        formData
+      );
+
+      const result = ImagePosting.data.url;
+      if (result) {
+        setFeatures(prev => [
+          ...prev,
+          {
+            featureDescription: featureDescription,
+            featureImage: result,
+          },
+        ]);
+      }
+
+      console.log("features:", features);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const pushColor = () => {
     console.log(
@@ -69,7 +193,7 @@ function ItemForm() {
     if (colorName === "") {
       console.log("ignore");
     }
-    if (colorImg === null) {
+    if (colorImg === "") {
       console.log("ignore");
     }
     if (code === "") {
@@ -86,15 +210,7 @@ function ItemForm() {
     } else if (colors.includes(findColor(ItemImage))) {
       console.log("ignore");
     } else {
-      setColors(prev => [
-        ...prev,
-        {
-          colorName: colorName,
-          code: code,
-          colorImg: colorImg,
-          ItemImage: ItemImage,
-        },
-      ]);
+      postColorImage();
     }
   };
   const findFeature = e => {
@@ -104,7 +220,7 @@ function ItemForm() {
     console.log(duplicateObject);
     return duplicateObject[0];
   };
-  const pushFeature = () => {
+  const pushFeature = async () => {
     if (featureDescription === "") {
       console.log("ignore");
     } else if (featureImage === null) {
@@ -114,23 +230,66 @@ function ItemForm() {
     } else if (features.includes(findFeature(featureDescription))) {
       console.log("ignore");
     } else {
-      setFeatures(prev => [
-        ...prev,
+      postFeatureImage();
+    }
+  };
+  const handleSubmission = async () => {
+    if (Images.length != 0 && colors.length != 0 && features.length != 0) {
+      //image filter
+      Images.map(async image => {
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
+        formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+        const ImagePosting = await axios.post(
+          "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
+          formData
+        );
+
+        const ImageURL = await ImagePosting.data.url;
+        setURL(prev => [...prev, ImageURL]);
+      });
+
+      //color filter
+    } else {
+      setError("Upload failed due to Images");
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/item/create",
+
         {
-          featureDescription: featureDescription,
-          featureImage: featureImage,
-        },
-      ]);
+          item_id: itemId,
+          category: category,
+          topic: topic,
+          title: title,
+          sizes: sizes,
+          stock: stock,
+          colors: colors,
+          image_paths: ImageLinks,
+          material: material,
+          feature_details: features,
+          rating: rating,
+          fabric_detail: Fabric,
+          washing_instruction: Washing,
+          category_id: category_id,
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
     <div className="bannerForm w-400 h-screen flex justify-center items-center">
       <div className="form-box h-auto bg-blue " style={{ width: "60%" }}>
-        <h2 className="mb-5 text-center text-3xl font-bold">Category Create</h2>
+        <h2 className="mb-5 text-center text-3xl font-bold">Items Create</h2>
         <form className="grid grid-cols-3 gap-4">
-          {/* topic input */}
-          <div className="tag">
+          {/* id input */}
+          <div className="id">
             <label
               htmlFor="id"
               className="block mb-2 text-sm font-bold text-xl text-gray-900"
@@ -143,9 +302,10 @@ function ItemForm() {
               alt="id"
               name="id"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setItemID(e.target.value)}
             />
           </div>
-          {/* Category_id input */}
+          {/* Category input */}
           <div className="category  ">
             <label
               htmlFor="category"
@@ -159,6 +319,24 @@ function ItemForm() {
               alt="category"
               name="category"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setCategory(e.target.value)}
+            />
+          </div>
+          {/* category_id input */}
+          <div className="Topic">
+            <label
+              htmlFor="topic"
+              className="block mb-2 text-sm font-bold text-xl text-gray-900"
+            >
+              Category_id
+            </label>
+            <input
+              type="text"
+              placeholder="eg: 01"
+              alt="category_id"
+              name="topic"
+              className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setCategoryID(e.target.value)}
             />
           </div>
           {/* imge input */}
@@ -175,10 +353,11 @@ function ItemForm() {
               alt="topic"
               name="topic"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setTopic(e.target.value)}
             />
           </div>
           {/* title input */}
-          <div className="title col-span-3 ">
+          <div className="title col-span-2 ">
             <label
               htmlFor="title"
               className="block mb-2 text-sm font-bold text-xl text-gray-900 "
@@ -191,6 +370,7 @@ function ItemForm() {
               alt="title"
               name="title"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setTitle(e.target.value)}
             />
           </div>
           {/* size input */}
@@ -249,6 +429,7 @@ function ItemForm() {
               alt="stock"
               name="stock"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setStock(e.target.value)}
             />
           </div>
 
@@ -293,15 +474,15 @@ function ItemForm() {
                   htmlFor="color"
                   className="block mb-2 text-sm font-bold text-xl text-gray-900 "
                 >
-                  Color Image
+                  Color Hex
                 </label>
                 <input
-                  type="file"
+                  type="type"
                   placeholder="eg: S,XS,M"
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setClimg(e.target.files[0])}
+                  onChange={e => setClimg(e.target.value)}
                 />
               </div>
               <div>
@@ -342,8 +523,8 @@ function ItemForm() {
                           -
                         </span>
                         <p>
-                          {color.colorName} : {color.code} |{" "}
-                          {color.colorImg.name} | {color.ItemImage.name}{" "}
+                          {color.colorName} : {color.code} | {color.colorImg} |{" "}
+                          {color.ItemImage}{" "}
                         </p>
                       </div>
                     ) : (
@@ -411,7 +592,9 @@ function ItemForm() {
               name="material"
               id=""
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setMaterial(e.target.value)}
             >
+              <option value="">--Please choose material--</option>
               <option value="airism">Airism</option>
               <option value="cotton">Cotton</option>
               <option value="dry-ex">Dry-ex</option>
@@ -477,8 +660,7 @@ function ItemForm() {
                           -
                         </span>
                         <p>
-                          {feature.featureDescription} :{" "}
-                          {feature.featureImage.name}{" "}
+                          {feature.featureDescription} : {feature.featureImage}{" "}
                         </p>
                       </div>
                     ) : (
@@ -505,6 +687,7 @@ function ItemForm() {
               alt="rating"
               name="rating"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setRating(e.target.value)}
             />
           </div>
           {/* Fabric_Detail input */}
@@ -521,6 +704,7 @@ function ItemForm() {
               alt="fabric"
               name="fabric"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setFabric(e.target.value)}
             />
           </div>
           {/* Washing Instruction input */}
@@ -537,6 +721,7 @@ function ItemForm() {
               alt="washing"
               name="washing"
               className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setWashing(e.target.value)}
             />
           </div>
 
@@ -582,11 +767,24 @@ function ItemForm() {
               )}
             </div>
           </div>
-
+          <div className="text-red-400 font-bold ">
+            <p>{error}</p>
+          </div>
           {/* button */}
           <div className="banner-btn col-span-3 h-10 flex justify-center mt-10">
-            <div className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300">
+            <div
+              className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300"
+              onClick={() => PostItem()}
+            >
               <p>Add</p>
+            </div>
+          </div>
+          <div className="banner-btn col-span-3 h-10 flex justify-center mt-10">
+            <div
+              className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300"
+              onClick={() => postColorImage()}
+            >
+              <p>Test color</p>
             </div>
           </div>
         </form>
@@ -596,3 +794,50 @@ function ItemForm() {
 }
 
 export default ItemForm;
+
+// {
+//
+//   "item_id": "0478152",
+//   "category": "t-shirt",
+//   "topic": "Women",
+//   "title": "UTs songoku are coming",
+//   "sizes": [
+//       "S",
+//       "XS",
+//       "M"
+//   ],
+//   "stock": 200,
+//   "colors": [
+//       {
+//           "code": "31",
+//           "name": "Red",
+//           "color_image": "1c381cef65afb24867d0d0f0643eeb58.png"
+//       },
+//       {
+//           "code": "45",
+//           "name": "Blue",
+//           "color_image": "abcde123456789.png"
+//       }
+//   ],
+//   "image_paths": [
+//       "/uploads/tshirt_front.png",
+//       "/uploads/tshirt_back.png",
+//       "/uploads/tshirt_side.png"
+//   ],
+//   "material": "Airism",
+//   "feature_details": [
+//       {
+//           "image": "/uploads/feature1.png",
+//           "description": "This is a high-quality t-shirt made from premium cotton."
+//       },
+//       {
+//           "image": "/uploads/feature2.png",
+//           "description": "The design features a unique print that stands out."
+//       }
+//   ],
+//   "rating": 4.5,
+//   "fabric_detail": "Cotton 100%",
+//   "washing_instruction": "Wash with cold water",
+//   "created_at": "2025-03-13T08:22:33.904Z",
+//   "category_id": null
+// },
