@@ -28,6 +28,7 @@ function ItemForm() {
   const [Images, setImages] = useState([]);
   const [error, setError] = useState("");
   const [ImageLinks, setURL] = useState([]);
+  const [price, setPrice] = useState("");
   const pushSize = () => {
     if (size === "") {
       console.log("ignore");
@@ -274,6 +275,7 @@ function ItemForm() {
           fabric_detail: Fabric,
           washing_instruction: Washing,
           category_id: category_id,
+          price: price,
         }
       );
 
@@ -374,7 +376,7 @@ function ItemForm() {
             />
           </div>
           {/* size input */}
-          <div className="size col-span-2 ">
+          <div className="size  ">
             <label
               htmlFor="size"
               className="block mb-2 text-sm font-bold text-xl text-gray-900 "
@@ -414,6 +416,23 @@ function ItemForm() {
                 <div></div>
               )}
             </div>
+          </div>
+          {/* Price input */}
+          <div className="price ">
+            <label
+              htmlFor="price"
+              className="block mb-2 text-sm font-bold text-xl text-gray-900 "
+            >
+              Price
+            </label>
+            <input
+              type="text"
+              placeholder="eg: 59.59"
+              alt="price"
+              name="price"
+              className="h-10 w-full border-2 rounded-md px-2"
+              onChange={e => setPrice(e.target.value)}
+            />
           </div>
           {/* Stock input */}
           <div className="stock ">
@@ -478,7 +497,7 @@ function ItemForm() {
                 </label>
                 <input
                   type="type"
-                  placeholder="eg: S,XS,M"
+                  placeholder="eg: #fff"
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
