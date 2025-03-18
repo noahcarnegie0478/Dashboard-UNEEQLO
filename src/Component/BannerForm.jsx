@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// @REVIEW - Checkout the reviews in ItemForm and examples
 function BannerForm() {
   const [image, setImage] = useState(null);
   const [topic, setTopic] = useState("");
@@ -25,7 +26,7 @@ function BannerForm() {
 
     const ImagePosting = await axios.post(
       "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-      formData
+      formData,
     );
     const ImageURL = await ImagePosting.data.url;
 
@@ -46,7 +47,7 @@ function BannerForm() {
         image: ImageURL,
         first_date: first_date,
         end_date: end_date,
-      }
+      },
     );
 
     console.log(response.data);
@@ -105,7 +106,7 @@ function BannerForm() {
               alt="topic"
               name="topic"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setTopic(e.target.value)}
+              onChange={(e) => setTopic(e.target.value)}
             />
           </div>
           {/* order input */}
@@ -122,7 +123,7 @@ function BannerForm() {
               alt="order"
               name="order"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setOrder(e.target.value)}
+              onChange={(e) => setOrder(e.target.value)}
             />
           </div>
           {/* type input */}
@@ -139,7 +140,7 @@ function BannerForm() {
               alt="type"
               name="type"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setType(e.target.value)}
+              onChange={(e) => setType(e.target.value)}
             />
           </div>
           {/* title input */}
@@ -156,7 +157,7 @@ function BannerForm() {
               alt="title"
               name="title"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           {/* Description input */}
@@ -174,14 +175,14 @@ function BannerForm() {
                 alt="description"
                 name="description"
                 className="border-2 h-10 rounded-md px-2 flex-4"
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
               />
               <input
                 type="color"
                 id="description"
                 name="description"
                 className="h-12 rounded flex-1"
-                onChange={e => setDescriptionColor(e.target.value)}
+                onChange={(e) => setDescriptionColor(e.target.value)}
               />
             </div>
           </div>
@@ -200,14 +201,14 @@ function BannerForm() {
                 alt="subdescription"
                 name="subdescription"
                 className="border-2 h-10 rounded-md px-2 flex-4"
-                onChange={e => setSubdescription(e.target.value)}
+                onChange={(e) => setSubdescription(e.target.value)}
               />
               <input
                 type="color"
                 id="subdescription"
                 name="subdescription"
                 className="h-12 rounded flex-1"
-                onChange={e => setSupDescriptionColor(e.target.value)}
+                onChange={(e) => setSupDescriptionColor(e.target.value)}
               />
             </div>
           </div>
@@ -225,7 +226,7 @@ function BannerForm() {
               alt="price"
               name="price"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setPrice(e.target.value)}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </div>
           {/* URL input */}
@@ -242,7 +243,7 @@ function BannerForm() {
               alt="url"
               name="url"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setURL(e.target.value)}
+              onChange={(e) => setURL(e.target.value)}
             />
           </div>
           {/* image input */}
@@ -258,7 +259,7 @@ function BannerForm() {
               alt="img"
               name="img"
               className="border-2 w-full h-10 rounded-md px-2  "
-              onChange={e => setImage(e.target.files[0])}
+              onChange={(e) => setImage(e.target.files[0])}
             />
           </div>
           {/* first-date input */}
@@ -275,7 +276,7 @@ function BannerForm() {
               alt="first-date"
               name="first-date"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setFirstDate(new Date(e.target.value))}
+              onChange={(e) => setFirstDate(new Date(e.target.value))}
             />
           </div>
           {/* end-date input */}
@@ -292,7 +293,7 @@ function BannerForm() {
               alt="end-date"
               name="end-date"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setEndDate(new Date(e.target.value))}
+              onChange={(e) => setEndDate(new Date(e.target.value))}
             />
           </div>
           <div className="banner-btn col-span-2 h-10 flex justify-center mt-10">

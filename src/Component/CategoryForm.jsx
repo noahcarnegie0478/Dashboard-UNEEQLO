@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+// @REVIEW - Checkout the reviews in ItemForm and examples
 function CategoryForm() {
   const [Recomendation, setRecomendation] = useState("");
   const [submit, setSubmit] = useState(false);
@@ -20,11 +21,11 @@ function CategoryForm() {
     } else if (tags.includes(Recomendation)) {
       console.log("Ignore");
     } else {
-      setTag(prev => [...prev, Recomendation]);
+      setTag((prev) => [...prev, Recomendation]);
     }
   };
-  const checkandDelete = e => {
-    setTag(prev => prev.filter(tag => tag !== e));
+  const checkandDelete = (e) => {
+    setTag((prev) => prev.filter((tag) => tag !== e));
   };
 
   const handleSubmission = async () => {
@@ -35,7 +36,7 @@ function CategoryForm() {
 
     const ImagePosting = await axios.post(
       "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-      formData
+      formData,
     );
     const ImageURL = await ImagePosting.data.url;
 
@@ -48,7 +49,7 @@ function CategoryForm() {
         title: title,
         image_path: ImageURL,
         recommendations: tags,
-      }
+      },
     );
 
     console.log(response.data);
@@ -101,7 +102,7 @@ function CategoryForm() {
               alt="tag"
               name="tag"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => {
+              onChange={(e) => {
                 setTopic(e.target.value);
               }}
             />
@@ -120,7 +121,7 @@ function CategoryForm() {
               alt="categoryid"
               name="categoryid"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => {
+              onChange={(e) => {
                 setCategoryID(e.target.value);
               }}
             />
@@ -139,7 +140,7 @@ function CategoryForm() {
               alt="type"
               name="type"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => {
+              onChange={(e) => {
                 setImage(e.target.files[0]);
               }}
             />
@@ -158,7 +159,7 @@ function CategoryForm() {
               alt="title"
               name="title"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => {
+              onChange={(e) => {
                 setTitle(e.target.value);
               }}
             />
@@ -178,7 +179,7 @@ function CategoryForm() {
                 alt="description"
                 name="description"
                 className="border-2 h-10 rounded-md px-2 flex-9"
-                onChange={e => setRecomendation(e.target.value)}
+                onChange={(e) => setRecomendation(e.target.value)}
               />
               <span
                 type="color"

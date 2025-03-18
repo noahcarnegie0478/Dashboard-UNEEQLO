@@ -2,6 +2,17 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function ItemForm() {
+  // @REVIEW - Too many useState here. For forms, usually you can assign the data as state.
+  //
+  // const [data, setDate] = useState({
+  // // default data value
+  // category: "",
+  // category_id: ""
+  // ...
+  // })
+  //
+  // And then you'll only need to grab the data and set once submit, you don't need to monitor the value via onChange
+  // See https://react.dev/reference/react-dom/components/form to see how react support form action
   const [sizes, setSizes] = useState([]);
   const [category, setCategory] = useState("");
   const [category_id, setCategoryID] = useState("");
@@ -35,7 +46,7 @@ function ItemForm() {
     } else if (sizes.includes(size)) {
       console.log("ignore");
     } else {
-      setSizes(prev => [...prev, size]);
+      setSizes((prev) => [...prev, size]);
     }
   };
   const pushImage = () => {
@@ -44,7 +55,7 @@ function ItemForm() {
     } else if (Images.includes(Image)) {
       console.log("ignore");
     } else {
-      setImages(prev => [...prev, Image]);
+      setImages((prev) => [...prev, Image]);
     }
   };
   const pushID = () => {
@@ -53,11 +64,13 @@ function ItemForm() {
     } else if (ids.includes(id)) {
       console.log("ignore");
     } else {
-      setIDs(prev => [...prev, id]);
+      setIDs((prev) => [...prev, id]);
     }
   };
 
   const PostItem = async () => {
+    // @REVIEW - Consider create an input field component to handle errors/validation instead of handling it via logic branching
+    // Example: https://medium.com/@pddadson/building-a-robust-input-component-in-react-handling-validation-errors-and-events-f8c03b7e58bc but can be much simpler
     if (itemId === "") {
       setError("please fill in Id field");
     } else if (category === "") {
@@ -114,13 +127,14 @@ function ItemForm() {
       }
     }
   };
-  const findColor = e => {
+  // @REVIEW - Do not use single letter for variables, properties, arguments etc. like EVER
+  const findColor = (e) => {
     const duplicateObject = colors.filter(
-      color =>
+      (color) =>
         color.colorName === e ||
         color.code === e ||
         color.colorImg === e ||
-        color.ItemImage === e
+        color.ItemImage === e,
     );
 
     return duplicateObject[0];
@@ -133,12 +147,12 @@ function ItemForm() {
 
     const ImagePosting = await axios.post(
       "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-      formData
+      formData,
     );
     const result = ImagePosting.data.url;
 
     if (result !== "") {
-      setColors(prev => [
+      setColors((prev) => [
         ...prev,
         {
           colorName: colorName,
@@ -160,12 +174,12 @@ function ItemForm() {
 
       const ImagePosting = await axios.post(
         "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-        formData
+        formData,
       );
 
       const result = ImagePosting.data.url;
       if (result) {
-        setFeatures(prev => [
+        setFeatures((prev) => [
           ...prev,
           {
             featureDescription: featureDescription,
@@ -188,7 +202,7 @@ function ItemForm() {
       "colorImg: ",
       colorImg,
       "ItemImage: ",
-      ItemImage
+      ItemImage,
     );
 
     if (colorName === "") {
@@ -214,9 +228,10 @@ function ItemForm() {
       postColorImage();
     }
   };
-  const findFeature = e => {
+  const findFeature = (e) => {
     const duplicateObject = features.filter(
-      feature => feature.featureImage === e || feature.featureDescription === e
+      (feature) =>
+        feature.featureImage === e || feature.featureDescription === e,
     );
     console.log(duplicateObject);
     return duplicateObject[0];
@@ -237,19 +252,20 @@ function ItemForm() {
   const handleSubmission = async () => {
     if (Images.length != 0 && colors.length != 0 && features.length != 0) {
       //image filter
-      Images.map(async image => {
+      Images.map(async (image) => {
         const formData = new FormData();
         formData.append("file", image);
         formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
         formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
 
+        // @REVIEW - Need consistency in naming convention. Checkout https://airbnb.io/javascript/react/#naming
         const ImagePosting = await axios.post(
           "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-          formData
+          formData,
         );
 
         const ImageURL = await ImagePosting.data.url;
-        setURL(prev => [...prev, ImageURL]);
+        setURL((prev) => [...prev, ImageURL]);
       });
 
       //color filter
@@ -276,7 +292,7 @@ function ItemForm() {
           washing_instruction: Washing,
           category_id: category_id,
           price: price,
-        }
+        },
       );
 
       console.log(response.data);
@@ -304,7 +320,7 @@ function ItemForm() {
               alt="id"
               name="id"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setItemID(e.target.value)}
+              onChange={(e) => setItemID(e.target.value)}
             />
           </div>
           {/* Category input */}
@@ -321,7 +337,7 @@ function ItemForm() {
               alt="category"
               name="category"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setCategory(e.target.value)}
+              onChange={(e) => setCategory(e.target.value)}
             />
           </div>
           {/* category_id input */}
@@ -338,7 +354,7 @@ function ItemForm() {
               alt="category_id"
               name="topic"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setCategoryID(e.target.value)}
+              onChange={(e) => setCategoryID(e.target.value)}
             />
           </div>
           {/* imge input */}
@@ -355,7 +371,7 @@ function ItemForm() {
               alt="topic"
               name="topic"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setTopic(e.target.value)}
+              onChange={(e) => setTopic(e.target.value)}
             />
           </div>
           {/* title input */}
@@ -372,7 +388,7 @@ function ItemForm() {
               alt="title"
               name="title"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           {/* size input */}
@@ -390,7 +406,7 @@ function ItemForm() {
                 alt="size"
                 name="size"
                 className="h-10 w-full border-2 rounded-md px-2"
-                onChange={e => setSize(e.target.value)}
+                onChange={(e) => setSize(e.target.value)}
               />
               <span className="text-4xl font-bold " onClick={() => pushSize()}>
                 +
@@ -403,7 +419,7 @@ function ItemForm() {
                     <span
                       className="text-2xl"
                       onClick={() =>
-                        setSizes(prev => prev.filter(list => list !== size))
+                        setSizes((prev) => prev.filter((list) => list !== size))
                       }
                     >
                       {" "}
@@ -431,7 +447,7 @@ function ItemForm() {
               alt="price"
               name="price"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setPrice(e.target.value)}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </div>
           {/* Stock input */}
@@ -448,7 +464,7 @@ function ItemForm() {
               alt="stock"
               name="stock"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setStock(e.target.value)}
+              onChange={(e) => setStock(e.target.value)}
             />
           </div>
 
@@ -468,7 +484,7 @@ function ItemForm() {
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setClname(e.target.value)}
+                  onChange={(e) => setClname(e.target.value)}
                 />
               </div>
 
@@ -485,7 +501,7 @@ function ItemForm() {
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setClcode(e.target.value)}
+                  onChange={(e) => setClcode(e.target.value)}
                 />
               </div>
               <div>
@@ -501,7 +517,7 @@ function ItemForm() {
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setClimg(e.target.value)}
+                  onChange={(e) => setClimg(e.target.value)}
                 />
               </div>
               <div>
@@ -517,7 +533,7 @@ function ItemForm() {
                   alt="color"
                   name="color"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setItemimg(e.target.files[0])}
+                  onChange={(e) => setItemimg(e.target.files[0])}
                 />
               </div>
               <span className="text-4xl font-bold " onClick={() => pushColor()}>
@@ -533,8 +549,8 @@ function ItemForm() {
                         <span
                           className="text-2xl"
                           onClick={() =>
-                            setColors(prev =>
-                              prev.filter(list => list !== color)
+                            setColors((prev) =>
+                              prev.filter((list) => list !== color),
                             )
                           }
                         >
@@ -572,7 +588,7 @@ function ItemForm() {
                 alt="image"
                 name="image"
                 className="h-10 w-full border-2 rounded-md px-2"
-                onChange={e => setImage(e.target.files[0])}
+                onChange={(e) => setImage(e.target.files[0])}
               />
               <span className="text-4xl font-bold " onClick={() => pushImage()}>
                 +
@@ -585,7 +601,9 @@ function ItemForm() {
                     <span
                       className="text-2xl"
                       onClick={() =>
-                        setImages(prev => prev.filter(list => list !== image))
+                        setImages((prev) =>
+                          prev.filter((list) => list !== image),
+                        )
                       }
                     >
                       {" "}
@@ -611,7 +629,7 @@ function ItemForm() {
               name="material"
               id=""
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setMaterial(e.target.value)}
+              onChange={(e) => setMaterial(e.target.value)}
             >
               <option value="">--Please choose material--</option>
               <option value="airism">Airism</option>
@@ -635,7 +653,7 @@ function ItemForm() {
                   alt="feature"
                   name="feature"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setFeatureDescription(e.target.value)}
+                  onChange={(e) => setFeatureDescription(e.target.value)}
                 />
               </div>
 
@@ -651,7 +669,7 @@ function ItemForm() {
                   alt="feature"
                   name="feature"
                   className="h-10 w-full border-2 rounded-md px-2"
-                  onChange={e => setFeatureImage(e.target.files[0])}
+                  onChange={(e) => setFeatureImage(e.target.files[0])}
                 />
               </div>
               <span
@@ -670,8 +688,8 @@ function ItemForm() {
                         <span
                           className="text-2xl"
                           onClick={() =>
-                            setFeatures(prev =>
-                              prev.filter(list => list !== feature)
+                            setFeatures((prev) =>
+                              prev.filter((list) => list !== feature),
                             )
                           }
                         >
@@ -679,7 +697,8 @@ function ItemForm() {
                           -
                         </span>
                         <p>
-                          {feature.featureDescription} : {feature.featureImage}{" "}
+                          {feature.featureDescription} :{" "}
+                          {feature.featureImage}{" "}
                         </p>
                       </div>
                     ) : (
@@ -706,7 +725,7 @@ function ItemForm() {
               alt="rating"
               name="rating"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setRating(e.target.value)}
+              onChange={(e) => setRating(e.target.value)}
             />
           </div>
           {/* Fabric_Detail input */}
@@ -723,7 +742,7 @@ function ItemForm() {
               alt="fabric"
               name="fabric"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setFabric(e.target.value)}
+              onChange={(e) => setFabric(e.target.value)}
             />
           </div>
           {/* Washing Instruction input */}
@@ -740,7 +759,7 @@ function ItemForm() {
               alt="washing"
               name="washing"
               className="h-10 w-full border-2 rounded-md px-2"
-              onChange={e => setWashing(e.target.value)}
+              onChange={(e) => setWashing(e.target.value)}
             />
           </div>
 
@@ -759,7 +778,7 @@ function ItemForm() {
                 alt="product_id"
                 name="product_id"
                 className="h-10 w-full border-2 rounded-md px-2"
-                onChange={e => setid(e.target.value)}
+                onChange={(e) => setid(e.target.value)}
               />
               <span className="text-4xl font-bold " onClick={() => pushID()}>
                 +
@@ -772,7 +791,7 @@ function ItemForm() {
                     <span
                       className="text-2xl"
                       onClick={() =>
-                        setIDs(prev => prev.filter(list => list !== id))
+                        setIDs((prev) => prev.filter((list) => list !== id))
                       }
                     >
                       {" "}
