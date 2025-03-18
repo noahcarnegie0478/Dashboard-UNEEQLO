@@ -44,7 +44,7 @@ function ItemForm() {
     } else if (Images.includes(Image)) {
       console.log("ignore");
     } else {
-      setImages(prev => [...prev, Image]);
+      postImagePath();
     }
   };
   const pushID = () => {
@@ -151,6 +151,25 @@ function ItemForm() {
 
     console.log("colors: ", colors);
   };
+
+  const postImagePath = async () => {
+    const formData = new FormData();
+    formData.append("file", Image);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
+    formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+    const ImagePosting = await axios.post(
+      "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
+      formData
+    );
+    const result = ImagePosting.data.url;
+
+    if (result !== "") {
+      setImages(prev => [...prev, result]);
+    }
+
+    console.log("colors: ", colors);
+  };
   const postFeatureImage = async () => {
     try {
       const formData = new FormData();
@@ -235,27 +254,6 @@ function ItemForm() {
     }
   };
   const handleSubmission = async () => {
-    if (Images.length != 0 && colors.length != 0 && features.length != 0) {
-      //image filter
-      Images.map(async image => {
-        const formData = new FormData();
-        formData.append("file", image);
-        formData.append("upload_preset", import.meta.env.VITE_CLOUD_DATABASE);
-        formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
-
-        const ImagePosting = await axios.post(
-          "https://api.cloudinary.com/v1_1/dptvqmded/image/upload",
-          formData
-        );
-
-        const ImageURL = await ImagePosting.data.url;
-        setURL(prev => [...prev, ImageURL]);
-      });
-
-      //color filter
-    } else {
-      setError("Upload failed due to Images");
-    }
     try {
       const response = await axios.post(
         "http://localhost:3000/api/item/create",
@@ -268,7 +266,7 @@ function ItemForm() {
           sizes: sizes,
           stock: stock,
           colors: colors,
-          image_paths: ImageLinks,
+          image_paths: Images,
           material: material,
           feature_details: features,
           rating: rating,
@@ -591,7 +589,7 @@ function ItemForm() {
                       {" "}
                       -
                     </span>
-                    <p className="font-bold">{image.name}</p>
+                    <p className="font-bold">{image}</p>
                   </div>
                 ))
               ) : (
@@ -798,14 +796,6 @@ function ItemForm() {
               <p>Add</p>
             </div>
           </div>
-          <div className="banner-btn col-span-3 h-10 flex justify-center mt-10">
-            <div
-              className="submit p-2 bg-red-500 px-20 rounded-md border-1 text-white font-bold hover:bg-red-300"
-              onClick={() => postColorImage()}
-            >
-              <p>Test color</p>
-            </div>
-          </div>
         </form>
       </div>
     </div>
@@ -813,50 +803,3 @@ function ItemForm() {
 }
 
 export default ItemForm;
-
-// {
-//
-//   "item_id": "0478152",
-//   "category": "t-shirt",
-//   "topic": "Women",
-//   "title": "UTs songoku are coming",
-//   "sizes": [
-//       "S",
-//       "XS",
-//       "M"
-//   ],
-//   "stock": 200,
-//   "colors": [
-//       {
-//           "code": "31",
-//           "name": "Red",
-//           "color_image": "1c381cef65afb24867d0d0f0643eeb58.png"
-//       },
-//       {
-//           "code": "45",
-//           "name": "Blue",
-//           "color_image": "abcde123456789.png"
-//       }
-//   ],
-//   "image_paths": [
-//       "/uploads/tshirt_front.png",
-//       "/uploads/tshirt_back.png",
-//       "/uploads/tshirt_side.png"
-//   ],
-//   "material": "Airism",
-//   "feature_details": [
-//       {
-//           "image": "/uploads/feature1.png",
-//           "description": "This is a high-quality t-shirt made from premium cotton."
-//       },
-//       {
-//           "image": "/uploads/feature2.png",
-//           "description": "The design features a unique print that stands out."
-//       }
-//   ],
-//   "rating": 4.5,
-//   "fabric_detail": "Cotton 100%",
-//   "washing_instruction": "Wash with cold water",
-//   "created_at": "2025-03-13T08:22:33.904Z",
-//   "category_id": null
-// },
